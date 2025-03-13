@@ -1,15 +1,21 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import { ref,reactive } from 'vue';
+import axios from 'axios';
 
 const event=ref('');
 const events=reactive(new Array());
 let editText=ref('');
 const showInput=reactive(new Array());
 const addEvent=()=>{
-    events.push(event.value);
-    event.value='';
-    showInput.push(false);
+    axios.post('/event',{event:event.value})
+    .then((res)=>{
+        events.push(event.value);
+        event.value='';
+        showInput.push(false);    
+        console.log(res.data);
+    }).catch(err=>console.log(err));
+    
    // console.log(showInput);
 }
 const save=(idx)=>{
