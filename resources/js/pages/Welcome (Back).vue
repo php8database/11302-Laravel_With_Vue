@@ -3,6 +3,7 @@ import { Head, Link , useForm,router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref , reactive ,onBeforeMount} from 'vue';
 
+
 const props=defineProps({events:Array});
 //let text=ref("");
 const form=useForm({
