@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class EventController extends Controller
 {
@@ -12,7 +13,8 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        $events=Event::all();
+        return Inertia::render('Welcome', ['events'=>$events]);
     }
 
     /**
@@ -32,7 +34,7 @@ class EventController extends Controller
         $event=new Event;
         $event->event=$request->event;
         $event->save();
-        
+
     }
 
     /**
@@ -62,8 +64,8 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Event $event)
+    public function destroy($id)
     {
-        //
+        Event::destroy($id);
     }
 }
