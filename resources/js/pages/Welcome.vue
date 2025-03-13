@@ -1,60 +1,65 @@
-<script setup lang="ts">
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
+<script setup>
+import { Head, Link , useForm,router } from '@inertiajs/vue3';
 import axios from 'axios';
-import { ref, reactive, onBeforeMount } from 'vue';
+import { ref , reactive ,onBeforeMount} from 'vue';
 
-const props = defineProps({
-    events: Array
-});
+const props=defineProps({events:Array});
+//let text=ref("");
+const form=useForm({
+    event:"",
 
-const form = useForm({
-    event: "",
 });
-const editText = useForm({
-    event: "",
-    id: 0,
+const editText=useForm({
+    event:"",
+    id:0,
 });
-let showEdit = reactive<boolean[]>([]);
-
-const addEvent = () => {
-    form.post(route('store'), {
-        onSuccess: () => form.event = "",
+let showEdit=reactive(new Array());
+//let lists=reactive(new Array());
+const addEvent=()=>{
+    //lists.push(form.event);
+    
+    form.post(route('store'),{
+        onSuccess:()=>form.event="",
     });
-};
+    
+    //console.log(lists);
+}
 
-const del = (idx: number, id: number) => {
-    axios.post(route('destroy', { id }))
-        .then(() => {
+const del=(idx,id)=>{
+   // lists.splice(idx,1);
+   axios.post(route('destroy',{id}))
+        .then((res)=>{
             router.reload();
-        });
-};
+   });
+}
 
-const edit = (idx: number, id: number) => {
-    if (showEdit.indexOf(true) === -1) {
-        editText.event = props.events[idx].event;
-        editText.id = id;
-        showEdit[idx] = true;
-    } else {
+const edit=(idx,id)=>{
+    if(showEdit.indexOf(true)==-1){
+        editText.event=props.events[idx].event;
+        editText.id=id;
+        showEdit[idx]=true;
+    }else{
         alert("請先完成編輯");
     }
-};
+}
+const save=(idx,id)=>{
+   editText.post(route('update',id),{
+       onSuccess:()=>{
+           showEdit[idx]=false;
+           router.reload();
+       }
+   });
+   // showEdit[idx]=false;
+}
+const cancel=(idx)=>{
+    editText.event='';
+   showEdit[idx]=false;
+}
 
-const save = (idx: number, id: number) => {
-    editText.post(route('update', id), {
-        onSuccess: () => {
-            showEdit[idx] = false;
-            router.reload();
-        }
+onBeforeMount(()=>{
+    props.events.forEach((item)=>{
+        showEdit.push(false);
     });
-};
-
-const cancel = (idx: number) => {
-    editText.event = '';
-    showEdit[idx] = false;
-};
-
-onBeforeMount(() => {
-    props.events.forEach(() => showEdit.push(false));
 });
 </script>
 
@@ -69,18 +74,21 @@ onBeforeMount(() => {
                 <Link
                     v-if="$page.props.auth.user"
                     :href="route('dashboard')"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
+                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                >
                     Dashboard
                 </Link>
                 <template v-else>
                     <Link
                         :href="route('login')"
-                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]">
+                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                    >
                         Log in
                     </Link>
                     <Link
                         :href="route('register')"
-                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
+                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                    >
                         Register
                     </Link>
                 </template>
@@ -88,50 +96,55 @@ onBeforeMount(() => {
         </header>
         <div class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity lg:grow">
             <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row flex-wrap">
-                <div class="w-full">
-                    <label for="">待辦事項</label>
-                    <input type="text" v-model="form.event" class="border px-3 py-3 rounded-lg ">
-                    <button class="btn btn-add" @click="addEvent">新增</button>
+            <div class="w-full">
+                <label for="">待辦事項</label>
+                <input type="text" v-model="form.event" class="border px-3 py-3 rounded-lg ">
+                <button class="btn btn-add"
+                       @click="addEvent"
+                      >
+                        新增
+                </button>
+            </div>
+            <div class="list w-1/2">
+                <p v-for="item,idx in events" :key="idx" class="flex justify-between items-center border-b-2 py-2">
+                <span>
+                    <span v-if="!showEdit[idx]">{{ item.event }}</span>
+                    <input type="text" v-model="editText.event" class="p-3 rounded-lg border bg-yellow-100"
+                           v-if="showEdit[idx]">
+                </span>
+                <div v-if="!showEdit[idx]">
+                <!-- <div> -->
+                    <button class="btn btn-edit" @click="edit(idx,item.id)">編輯</button>
+                    <button class="btn btn-del" @click="del(idx,item.id)">刪除</button>
                 </div>
-                <div class="list w-1/2">
-                    <p v-for="(item, idx) in props.events" :key="idx" class="flex justify-between items-center border-b-2 py-2">
-                        <span>
-                            <span v-if="!showEdit[idx]">{{ item.event }}</span>
-                            <input type="text" v-model="editText.event" class="p-3 rounded-lg border bg-yellow-100" v-if="showEdit[idx]" />
-                        </span>
-                        <div v-if="!showEdit[idx]">
-                            <button class="btn btn-edit" @click="edit(idx, item.id)">編輯</button>
-                            <button class="btn btn-del" @click="del(idx, item.id)">刪除</button>
-                        </div>
-                        <div v-else>
-                            <button class="btn btn-save" @click="save(idx, item.id)">更新</button>
-                            <button class="btn btn-cancel" @click="cancel(idx)">取消</button>
-                        </div>
-                    </p>
+                <div v-else>
+                    <button class="btn btn-save" @click="save(idx,item.id)">更新</button>
+                    <button class="btn btn-cancel" @click="cancel(idx)">取消</button>
                 </div>
+                </p>
+            </div>
             </main>
         </div>
         <div class="h-14.5 hidden lg:block"></div>
     </div>
 </template>
-
 <style scoped>
-.btn {
-    @apply border-2 px-3 py-1 rounded-lg drop-shadow-md;
+.btn{
+    @apply border-2 px-3 py-1 rounded-lg drop-shadow-md
 }
-.btn-add {
-    @apply bg-green-400 text-green-800 hover:bg-green-800 hover:text-green-200;
+.btn-add{
+    @apply bg-green-400 text-green-800 hover:bg-green-800 hover:text-green-200
 }
-.btn-edit {
-    @apply bg-blue-400 text-blue-800 hover:bg-blue-800 hover:text-blue-200;
+.btn-edit{
+    @apply bg-blue-400 text-blue-800 hover:bg-blue-800 hover:text-blue-200
 }
-.btn-del {
-    @apply bg-red-400 text-red-800 hover:bg-red-800 hover:text-red-200;
+.btn-del{
+    @apply bg-red-400 text-red-800 hover:bg-red-800 hover:text-red-200
 }
-.btn-save {
-    @apply bg-orange-300 text-orange-800 hover:bg-orange-800 hover:text-orange-200;
+.btn-save{
+    @apply bg-orange-300 text-orange-800 hover:bg-orange-800 hover:text-orange-200
 }
-.btn-cancel {
-    @apply bg-gray-300 text-gray-800 hover:bg-gray-800 hover:text-gray-300;
+.btn-cancel{
+    @apply bg-gray-300 text-gray-800 hover:bg-gray-800 hover:text-gray-300
 }
 </style>
