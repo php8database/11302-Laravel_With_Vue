@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2025-03-13 06:18:10
+-- 產生時間： 2025-03-13 06:19:17
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫： `extends`
+-- 資料庫： `event`
 --
 
 -- --------------------------------------------------------
@@ -54,8 +54,8 @@ CREATE TABLE `cache_locks` (
 CREATE TABLE `events` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `event` varchar(255) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp()
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -129,7 +129,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (1, '0001_01_01_000000_create_users_table', 1),
 (2, '0001_01_01_000001_create_cache_table', 1),
 (3, '0001_01_01_000002_create_jobs_table', 1),
-(4, '2025_03_09_101627_create_events_table', 1);
+(4, '2025_03_09_101627_create_events_table', 1),
+(5, '2025_03_13_021845_create_events_table', 2);
 
 -- --------------------------------------------------------
 
@@ -163,10 +164,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('95b1H8euFexcTvT2Adks039GCQFbYpJDeEjRZpDe', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiaGxyRjYxNUJKbzFTZ3J6VXI4Q1QwbmVUM1pTV1F2cjBxTHZqRnk0UyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTY6Imh0dHA6Ly9sb2NhbGhvc3QiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1741586472),
-('DrBNkJJGwVwhwCtbtHoD52y6IrT7KciQ1HJZVdQd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOWt1eU9IUlNlVlBONmJ5SDhGVkJKYUoyYm5UYWhVOVFadEl1SUZCYiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTU6Imh0dHA6Ly90b2RvLmNvbSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1741837037),
-('QeQN7dfysyKfTKBfWXAoafbG4F44HwVlTRTyklr7', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMnVQbTAzdHZIV1VsNlgxYmN6Tzd1Z2JQNm5iOUFGR3poNW4xZThZNSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTY6Imh0dHA6Ly9sb2NhbGhvc3QiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1741587382),
-('v48NmvW8jeVAuCaLVwk4AhUvZKVMqhRD7huXj6Or', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMTU4NWRDSzJNZmh6Qlp0Rk1BTTZLcFgwV0RmUWFIZnZKSmM2aXVORiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTY6Imh0dHA6Ly9sb2NhbGhvc3QiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1741587643);
+('DrBNkJJGwVwhwCtbtHoD52y6IrT7KciQ1HJZVdQd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiRWowbXZiRkh1NjQ0NnVyUXk2OTV5VkVrSHk3OU9rTVRiWHpWUE1DcCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MTU6Imh0dHA6Ly90b2RvLmNvbSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1741840785);
 
 -- --------------------------------------------------------
 
@@ -280,7 +278,7 @@ ALTER TABLE `jobs`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `users`
