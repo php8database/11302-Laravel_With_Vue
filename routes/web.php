@@ -5,9 +5,10 @@ use Inertia\Inertia;
 use App\Http\Controllers\EventController;
 
 Route::get('/', [EventController::class,'index'])->name('home');
-Route::post('/store', [EventController::class,'store'])->name('store');
-Route::post('/update/{id}', [EventController::class,'update'])->name('update');
-Route::post('/{id}', [EventController::class,'destroy'])->name('destroy');
+
+Route::post('/event', [EventController::class,'store'])->name('store');
+Route::delete('/event/{id}', [EventController::class,'destroy'])->name('delete');
+Route::patch('/event/{id}', [EventController::class,'update'])->name('update');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
