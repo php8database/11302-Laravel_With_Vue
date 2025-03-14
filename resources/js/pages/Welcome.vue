@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link ,useForm,router} from '@inertiajs/vue3';
-import { ref,reactive } from 'vue';
+import { ref,reactive ,onBeforeMount} from 'vue';
 import axios from 'axios';
 
 
@@ -10,13 +10,16 @@ const props=defineProps({
 
 const event=ref('');
 //const events=reactive(new Array());
-let editText=ref('');
+//let editText=ref('');
 
 const createEvent=useForm({
     event:'',
 });
-
+const editEvent=useForm({
+    event:'',
+});
 const showInput=reactive(new Array());
+
 const addEvent=()=>{
      createEvent.event=event.value;
      createEvent.post('/event',{
@@ -34,14 +37,27 @@ const addEvent=()=>{
     
    // console.log(showInput);
 }
-const save=(idx)=>{
+
+/**
+ * 使用patch方法更新資料
+ * @param id 
+ */
+const save=(id)=>{
     //events.splice(idx,1,editText.value);
-    events[idx]=editText.value;
-    editText.value='';
-    showInput.fill(false);
+    editEvent.patch(`/event/${id}`,{
+        onSuccess:()=>{
+            router.reload();
+            showInput.fill(false);
+        }
+    });
+
 }
+/**
+ * 編輯事件，顯示輸入框
+ * @param idx 
+ */ 
 const edit=(idx)=>{
-    editText.value=events[idx];
+    editEvent.event=props.events[idx].event;
     showInput.fill(false);
     showInput[idx]=true;
     //console.log(showInput);
@@ -55,6 +71,16 @@ const del=(id)=>{
         router.reload();
     }).catch(err=>console.log(err));
 }
+
+/**
+ * 使用onBeforeMount()生命週期hooks，初始化showInput陣列
+ */
+onBeforeMount(()=>{
+    props.events.forEach((event,idx)=>{
+        showInput.push(false);
+    });
+    //console.log(showInput);
+});
 
 </script>
 
@@ -109,11 +135,11 @@ const del=(id)=>{
                     {{idx+1}}. {{event.event}}
                    </div> 
                    <div v-else="showInput[idx]">
-                    {{idx+1}}. <input type="text" v-model="editText"  class="border border-gray-500 p-2 mx-2">
+                    {{idx+1}}. <input type="text" v-model="editEvent.event"  class="border border-gray-500 p-2 mx-2">
                    </div>
                    <div>
                       <button class="btn btn-yellow" v-if="!showInput[idx]"  @click="edit(idx)">編輯</button>
-                      <button class="btn btn-blue" v-if="showInput[idx]" @click="save(idx)">更新</button>
+                      <button class="btn btn-blue" v-if="showInput[idx]" @click="save(event.id)">更新</button>
                       <button class="btn btn-red" @click="del(event.id)">刪除</button>
                    </div>
 

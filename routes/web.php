@@ -8,6 +8,7 @@ Route::get('/', [EventController::class,'index'])->name('home');
 
 Route::post('/event', [EventController::class,'store'])->name('store');
 Route::delete('/event/{id}', [EventController::class,'destroy'])->name('delete');
+Route::patch('/event/{id}', [EventController::class,'update'])->name('update');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
