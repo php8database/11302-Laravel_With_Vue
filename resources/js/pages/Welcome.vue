@@ -22,6 +22,8 @@ const addEvent=()=>{
      });
 }
 
+//
+
 /* const del=(id)=>{
     axios.delete(`/event/${id}`)
     .then((res)=>{
