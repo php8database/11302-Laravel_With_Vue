@@ -1,7 +1,6 @@
 <script setup>
 import { Head, Link ,useForm,router} from '@inertiajs/vue3';
 import { ref,reactive ,onBeforeMount} from 'vue';
-import axios from 'axios';
 import Event from '@/pages/Event.vue';
 
 const props=defineProps({
@@ -9,16 +8,10 @@ const props=defineProps({
 });
 
 const event=ref('');
-//const events=reactive(new Array());
-//let editText=ref('');
 
 const createEvent=useForm({
     event:'',
 });
-const editEvent=useForm({
-    event:'',
-});
-const showInput=reactive(new Array());
 
 const addEvent=()=>{
      createEvent.event=event.value;
@@ -27,60 +20,15 @@ const addEvent=()=>{
                 event.value='';
             }
      });
-/*     axios.post('/event',{event:event.value})
-    .then((res)=>{
-        events.push(event.value);
-        event.value='';
-        showInput.push(false);    
-        console.log(res.data);
-    }).catch(err=>console.log(err)); */
-    
-   // console.log(showInput);
 }
 
-/**
- * 使用patch方法更新資料
- * @param id 
- */
-const save=(id)=>{
-    //events.splice(idx,1,editText.value);
-    editEvent.patch(`/event/${id}`,{
-        onSuccess:()=>{
-            router.reload();
-            showInput.fill(false);
-        }
-    });
-
-}
-/**
- * 編輯事件，顯示輸入框
- * @param idx 
- */ 
-const edit=(idx)=>{
-    editEvent.event=props.events[idx].event;
-    showInput.fill(false);
-    showInput[idx]=true;
-    //console.log(showInput);
-    //events.splice(idx,1,editText.value);
-    //editText.value='';
-}
-const del=(id)=>{
+/* const del=(id)=>{
     axios.delete(`/event/${id}`)
     .then((res)=>{
         //console.log(res.data);
         router.reload();
     }).catch(err=>console.log(err));
-}
-
-/**
- * 使用onBeforeMount()生命週期hooks，初始化showInput陣列
- */
-onBeforeMount(()=>{
-    props.events.forEach((event,idx)=>{
-        showInput.push(false);
-    });
-    //console.log(showInput);
-});
+} */
 
 </script>
 
@@ -129,7 +77,11 @@ onBeforeMount(()=>{
             </div>
             <h3 class='text-center w-full text-2xl '>待辦事項清單</h3>
             <div id="lists" class="w-full p-4">
-                <Event v-for="event,idx in props.events" :key="idx" :idx="idx"  :event="event" />
+                <Event v-for="event,idx in props.events" 
+                        :key="idx" 
+                        :idx="idx"  
+                        :event="event" 
+                        @del="del"/>
             </div>
             </main>
         </div>
