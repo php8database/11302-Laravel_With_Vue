@@ -33,7 +33,8 @@ class EventController extends Controller
         // 驗證請求中的 event 欄位
         $request->validate([
             'event' => 'required|string|max:255',  // 確保 event 欄位是必填的並且長度不超過 255 字符
-        ]);
+        ]); //禁止未輸入資料，空按新增送出！
+        
         //dd($request->all());
         $event=new Event;  // 創建新的事件實例並填充資料
         $event->event=$request->event;  // 這裡的 $request->event 是從表單或請求獲取的值
