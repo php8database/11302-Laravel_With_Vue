@@ -2,7 +2,7 @@
 import { Head, Link ,useForm,router} from '@inertiajs/vue3';
 import { ref,reactive ,onBeforeMount} from 'vue';
 import axios from 'axios';
-
+import Event from '@/pages/Event.vue';
 
 const props=defineProps({
     events:Array,
@@ -129,22 +129,7 @@ onBeforeMount(()=>{
             </div>
             <h3 class='text-center w-full text-2xl '>待辦事項清單</h3>
             <div id="lists" class="w-full p-4">
-                <div  class="w-full flex justify-between"
-                    v-for="event,idx in props.events" :key="idx">
-                   <div v-if="!showInput[idx]">
-                    {{idx+1}}. {{event.event}}
-                   </div> 
-                   <div v-else="showInput[idx]">
-                    {{idx+1}}. <input type="text" v-model="editEvent.event"  class="border border-gray-500 p-2 mx-2">
-                   </div>
-                   <div>
-                      <button class="btn btn-yellow" v-if="!showInput[idx]"  @click="edit(idx)">編輯</button>
-                      <button class="btn btn-blue" v-if="showInput[idx]" @click="save(event.id)">更新</button>
-                      <button class="btn btn-red" @click="del(event.id)">刪除</button>
-                   </div>
-
-                </div>
-
+                <Event v-for="event,idx in props.events" :key="idx" :idx="idx"  :event="event" />
             </div>
             </main>
         </div>
@@ -159,13 +144,5 @@ onBeforeMount(()=>{
 .btn-lime{
     @apply bg-lime-200 text-lime-800
 }
-.btn-yellow{
-    @apply bg-yellow-800 text-yellow-100
-}
-.btn-red{
-    @apply bg-red-200 text-red-800
-}
-.btn-blue{
-    @apply bg-blue-200 text-blue-800
-}
+
 </style>
